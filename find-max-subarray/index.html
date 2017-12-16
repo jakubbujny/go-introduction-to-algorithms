@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script>
+window.onload = function () {
+
+var dataPoints1 = [];
+
+var dataPoints2 = [];
+
+var options = {
+	zoomEnabled: true,
+	animationEnabled: true,
+	title: {
+		text: "Time complexity comparison"
+	},
+	axisY: {
+		includeZero: false,
+		lineThickness: 1
+	},
+	data: [
+        {
+            name: "Theoretical complexity",
+            type: "line",
+            showInLegend: true,
+            dataPoints: dataPoints1
+        },
+        {
+            name: "Practical complexity",
+            type: "line",
+            showInLegend: true,
+            dataPoints: dataPoints2
+        }
+	]
+};
+
+var chart = new CanvasJS.Chart("chartContainer", options);
+
+var limit = 1000;
+var y = 100;
+
+for (var i = 0; i < limit; i += 1) {
+	dataPoints1.push({
+		x: i,
+		y: i
+	});
+}
+
+$.get( "/theoretical.csv", function( data ) {
+  theoretical = $.csv.toArrays(data)
+  for (var i = 0, len = theoretical.length; i < len; i++) {
+      dataPoints2.push({
+            x: parseInt(theoretical[i][0]),
+            y: parseFloat(theoretical[i][1])
+        });
+  }
+  chart.render()
+});
+
+
+}
+
+    </script>
+</head>
+<body>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.3/jquery.csv.js"></script>
+</body>
+</html>
