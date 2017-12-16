@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"math"
 )
 func random(min int, max int) int {
 	return rand.Intn(max-min) + min
@@ -44,7 +45,6 @@ func timing(array []int, result chan int, wg *sync.WaitGroup) {
 	wg.Done()
 }
 func makeTest(length int) float64 {
-	sumTimes := 0
 	array := generateRandomArray(length)
 	resultChannel := make(chan int, 4)
 	wg := sync.WaitGroup{}
@@ -54,10 +54,13 @@ func makeTest(length int) float64 {
 	}
 	wg.Wait()
 	close(resultChannel)
+	min := math.MaxInt32
 	for resultTiming := range resultChannel {
-		sumTimes += resultTiming
+		if resultTiming < min {
+			min = resultTiming
+		}
 	}
-	return float64(sumTimes)/10.0
+	return float64(min)
 }
 func main() {
 
@@ -73,7 +76,7 @@ func main() {
 		panic("fail!")
 	}
 
-	max := 5000
+	max := 8000
 	f, err := os.OpenFile("algorithm.csv", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		panic(err)

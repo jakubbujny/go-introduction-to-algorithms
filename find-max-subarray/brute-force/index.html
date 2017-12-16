@@ -23,28 +23,18 @@ var options = {
             name: "Theoretical complexity",
             type: "line",
             showInLegend: true,
-            dataPoints: dataPoints1
+            dataPoints: dataPoints2
         },
         {
             name: "Practical complexity",
             type: "line",
             showInLegend: true,
-            dataPoints: dataPoints2
+            dataPoints: dataPoints1
         }
 	]
 };
 
 var chart = new CanvasJS.Chart("chartContainer", options);
-
-var limit = 1000;
-var y = 100;
-
-for (var i = 0; i < limit; i += 1) {
-	dataPoints1.push({
-		x: i,
-		y: i
-	});
-}
 
 $.get( "/theoretical.csv", function( data ) {
   theoretical = $.csv.toArrays(data)
@@ -57,6 +47,16 @@ $.get( "/theoretical.csv", function( data ) {
   chart.render()
 });
 
+$.get( "/algorithm.csv", function( data ) {
+  algorithm = $.csv.toArrays(data)
+  for (var i = 0, len = algorithm.length; i < len; i++) {
+      dataPoints1.push({
+            x: parseInt(algorithm[i][0]),
+            y: parseFloat(algorithm[i][1])
+        });
+  }
+  chart.render()
+});
 
 }
 
